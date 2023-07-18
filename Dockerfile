@@ -1,14 +1,11 @@
-FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
-
-MAINTAINER Yiannis Mouchakis <gmouchakis@iit.demokritos.gr>
-MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
+FROM sapdas/hadoop-base:2.10.2
 
 # Allow buildtime config of HIVE_VERSION
 ARG HIVE_VERSION
 # Set HIVE_VERSION from arg if provided at build, env if provided at run, or default
 # https://docs.docker.com/engine/reference/builder/#using-arg-variables
 # https://docs.docker.com/engine/reference/builder/#environment-replacement
-ENV HIVE_VERSION=${HIVE_VERSION:-3.1.0}
+ENV HIVE_VERSION=${HIVE_VERSION:-2.3.2}
 
 ENV HIVE_HOME /opt/hive
 ENV PATH $HIVE_HOME/bin:$PATH
@@ -48,12 +45,9 @@ RUN chmod +x /usr/local/bin/startup.sh
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# solve log version conflict
-RUN cp /opt/hadoop-3.2.1/share/hadoop/common/lib/guava-27.0-jre.jar /opt/hive/lib/
-RUN rm -rf /opt/hive/lib/guava-19.0.jar
-
 EXPOSE 10000
 EXPOSE 10002
+EXPOSE 9083
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD startup.sh
